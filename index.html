@@ -6,7 +6,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lab 9</title>
-
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+<script>
+  window.TrackJS && TrackJS.install({ 
+    token: "fac7a15edc1342b59b96ace0362c5667"
+    // for more configuration options, see https://docs.trackjs.com
+  });
+</script>
   <style>
     button {
       margin: 3px;
@@ -88,6 +94,11 @@
   </main>
 
   <script>
+    window.onerror = function (message, source, lineno, colno, error) {
+  console.log('Global error caught:', message);
+  return true;
+};
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,14 +106,118 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
+      try{
+        if(operator==='/'&& Number(secondNum)===0){
+          throw new Error('Cannot divide by 0');
+        }
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      }catch(err){
+        console.error('Caught error:', err);
+        output.innerHTML = 'Error: '+ err.message;
+      } finally{
+        console.log('Caclulation attempted');
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
+    class CalculationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'CalculationError';
+  }
+}
+
+document.querySelector('#first-num').addEventListener('blur', () => {
+  const value = document.querySelector('#first-num').value;
+  try {
+    if (isNaN(value)) throw new CalculationError('First number is not a valid number');
+  } catch (err) {
+    console.error(err.name + ': ' + err.message);
+  }
+});
 
     // Start your code here
     // You may move this JS to another file if you wish
-  </script>
+let timerStarted = false;
+
+errorBtns[0].addEventListener('click', () => {
+  console.log('This is a console.log demo!');
+});
+
+errorBtns[1].addEventListener('click', () => {
+  console.error('This is a console.error demo!');
+});
+
+errorBtns[2].addEventListener('click', () => {
+  console.count('Count button clicked');
+});
+
+errorBtns[3].addEventListener('click', () => {
+  console.warn('This is a console.warn demo!');
+});
+
+errorBtns[4].addEventListener('click', () => {
+  console.assert(false, 'Assertion failed: This should show because condition is false');
+});
+
+errorBtns[5].addEventListener('click', () => {
+  console.clear();
+});
+
+errorBtns[6].addEventListener('click', () => {
+  const obj = { name: "Test Object", value: 42 };
+  console.dir(obj);
+});
+
+errorBtns[7].addEventListener('click', () => {
+  console.dirxml(document.body);
+});
+
+errorBtns[8].addEventListener('click', () => {
+  console.group('Grouped Logs');
+  console.log('Log inside group');
+});
+
+errorBtns[9].addEventListener('click', () => {
+  console.groupEnd();
+});
+
+errorBtns[10].addEventListener('click', () => {
+  const data = [
+    { name: 'Ali', age: 20 },
+    { name: 'Ibrahim', age: 10 }
+  ];
+  console.table(data);
+});
+
+errorBtns[11].addEventListener('click', () => {
+  if (!timerStarted) {
+    console.time('Timer');
+    timerStarted = true;
+  } else {
+    console.warn('Timer already started');
+  }
+});
+
+errorBtns[12].addEventListener('click', () => {
+  if (timerStarted) {
+    console.timeEnd('Timer');
+    timerStarted = false;
+  } else {
+    console.warn('Start the timer first');
+  }
+});
+
+errorBtns[13].addEventListener('click', () => {
+  console.trace('Trace button pressed');
+});
+
+errorBtns[14].addEventListener('click', () => {
+  nonexistentFunction(); 
+});
+
+
+</script>
 </body>
 
 </html>
